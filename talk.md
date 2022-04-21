@@ -154,6 +154,7 @@ $\hat{r}(x|\theta)$]
 Interesting observations:
 - MI(x,theta) = E_p(x,theta) log r(x,theta)
 - The likelihood ratio is a sufficient statistic. 
+- Bayes factor is a ratio -> enables model comparison
 
 ---
 

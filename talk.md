@@ -1,10 +1,11 @@
 class: middle, center, title-slide
 count: false
 
-# Simulation-based inference:<br> Proceed with caution!
+# Reliable Simulation-based Inference in the Physical Sciences
 
-Likelihood-free in Paris<br>
-April 21, 2022
+Particle physics colloquium, KIT<br>
+
+January 12, 2022
 
 <br>
 
@@ -18,15 +19,15 @@ class: middle, center
 .grid[
 .kol-1-5.center[.width-100[![](figures/faces/kyle.png)] Kyle Cranmer]
 .kol-1-5.center[.width-100[![](figures/faces/johann.png)] Johann Brehmer]
-.kol-1-5.center[.width-100.circle[![](figures/faces/kagan.jpg)] Michael Kagan]
 .kol-1-5.center[.width-100[![](figures/faces/joeri.png)] Joeri Hermans]
-.kol-1-5.center[.width-90[![](figures/faces/antoine.png)] Antoine Wehenkel]
+.kol-1-5.center[.width-100[![](figures/faces/antoine.png)] Antoine Wehenkel]
+.kol-1-5.center[.width-90.circle[![](figures/faces/norman.jpg)] Norman Marlier]
 ]
 
 .grid[
-.kol-1-5.center[.width-100.circle[![](figures/faces/norman.jpg)] Norman Marlier]
+.kol-1-5.center[.width-100.circle[![](figures/faces/siddarth.png)] Siddharth Mishra-Sharma]
+.kol-1-5.center[.width-100.circle[![](figures/faces/christoph.jpg)] Christoph Weniger]
 .kol-1-5.center[.width-100.circle[![](figures/faces/arnaud.jpg)] Arnaud Delaunoy]
-.kol-1-5.center[.width-100.circle[![](figures/faces/maxime.jpeg)] Maxime Vandegar]
 .kol-1-5.center[.width-100.circle[![](figures/faces/malavika.jpg)] Malavika Vasist]
 .kol-1-5.center[.width-90.circle[![](figures/faces/francois.jpg)] Francois Rozet]
 ]
@@ -41,34 +42,56 @@ class: middle
 
 class: middle
 
-.center.width-80[![](./figures/prediction.png)]
+.avatars[![](figures/faces/joeri.png)]
 
-.center.width-70[![](./figures/unconditioned-program.png)]
+$$
+v_x = v \cos(\alpha),~~ v_y = v \sin(\alpha),
+$$
 
-.center[$$\theta, z, x \sim p(\theta, z, x)$$]
+$$
+\frac{dx}{dt} = v_x,~~\frac{dy}{dt} = v_y, \frac{dv_y}{dt} = -G.
+$$
+
+---
+
+class: middle
+
+.avatars[![](figures/faces/joeri.png)]
+
+```python
+def simulate(v, alpha, dt=0.001):
+    v_x = v * np.cos(alpha)  # x velocity m/s
+    v_y = v * np.sin(alpha)  # y velocity m/s
+    y = 1.1 + 0.3 * random.normal()
+    x = 0.0
+
+    while y > 0: # simulate until ball hits floor
+        v_y += dt * -G  # acceleration due to gravity
+        x += dt * v_x
+        y += dt * v_y
+
+    return x + 0.25 * random.normal()
+```
 
 ---
 
 class: middle, center
 
-.center.width-80[![](./figures/inference.png)]
+.avatars[![](figures/faces/joeri.png)]
 
-.center.width-70[![](./figures/conditioned-program.png)]
+The computer simulator defines the likelihood function $p(x|\theta)$ implicitly.
 
-.red.bold[Warning:] The likelihood
-$p(x | \theta) = \int p(x, z| \theta) dz$
-is intractable.
+.center.width-100[![](./figures/likelihood-model.png)]
 
 ---
 
-class: middle
-count: false
+class: middle, center
 
-# Simulation-based inference 
+What parameter values $\theta$ are the most plausible?
 
 ---
 
-class: middle
+# Bayesian inference
 
 Start with
 - a simulator that can generate $N$ samples $x\_i \sim p(x\_i|\theta\_i)$,
@@ -83,54 +106,105 @@ Then, estimate the posterior $$p(\theta|x\_\text{obs}) = \frac{p(x\_\text{obs} |
 
 class: middle
 
-.avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
+.avatars[![](figures/faces/joeri.png)]
 
-.center.width-100[![](./figures/frontiers-sbi0.png)]
+.center.width-100[![](./figures/prior_posterior.png)]
 
-.footnote[Credits: [Cranmer, Brehmer and Louppe](https://doi.org/10.1073/pnas.1912789117), 2020.]
+---
+
+class: center, middle, black-slide
+
+## The case of particle physics
+
+.width-55[![](figures/sm.jpg)]
+
+---
+
+background-image: url(./figures/lhc.gif)
+class: center, middle, black-slide
 
 ---
 
 class: middle
+
+.center.width-90[![](./figures/lfi-chain.png)]
+.grid[
+.kol-1-5.center[
+SM with parameters $\theta$
+
+.width-100[![](./figures/sm.png)]]
+.kol-2-5.center[
+Simulated observables $x$
+
+.width-80[![](./figures/lhc.gif)]]
+.kol-2-5.center[
+Real observations $x\_\text{obs}$
+
+.width-80[![](./figures/pp-xobs1.png)]
+.width-80[![](./figures/pp-xobs2.jpeg)]]
+]
+
+---
+
+class: middle
+
+.width-100[![](figures/process1.png)]
+
+???
+
+generation: pencil and paper calculable from first principles
+
+---
+
 count: false
+class: middle
 
-.avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
+.width-100[![](figures/process2.png)]
 
-.center.width-100[![](./figures/frontiers-sbi2.png)]
+???
 
-.footnote[Credits: [Cranmer, Brehmer and Louppe](https://doi.org/10.1073/pnas.1912789117), 2020.]
+parton shower + hadronization: controlled approximation of first principles + phenomenological model
 
 ---
 
-class: middle
 count: false
+class: middle
 
-.avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
+.width-100[![](figures/process3.png)]
 
-.center.width-100[![](./figures/frontiers-sbi.png)]
+???
 
-.footnote[Credits: [Cranmer, Brehmer and Louppe](https://doi.org/10.1073/pnas.1912789117), 2020.]
+detector simulation: interaction with the materials and digitization
+
+---
+
+count: false
+class: middle
+
+.width-100[![](figures/process4.png)]
+
+???
+
+reconstruction simulation
 
 ---
 
 class: middle
 
-.avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
+$$p(x|\theta) = \underbrace{\iiint}\_{\text{yikes!}} p(z\_p|\theta) p(z\_s|z\_p) p(z\_d|z\_s) p(x|z\_d) dz\_p dz\_s dz\_d$$
 
-.width-100[![](./figures/inference-algorithms.png)]
+???
 
-.footnote[Credits: [Cranmer, Brehmer and Louppe](https://doi.org/10.1073/pnas.1912789117), 2020.]
+That's bad!
 
 ---
-
-class: middle
 
 .avatars[![](figures/faces/kyle.png)![](figures/faces/joeri.png)![](figures/faces/johann.png)]
 
-## Neural ratio estimation (NRE)
+# Neural ratio estimation (NRE)
 
 The likelihood-to-evidence $r(x|\theta) = \frac{p(x|\theta)}{p(x)} = \frac{p(x, \theta)}{p(x)p(\theta)}$ ratio can be learned, even if neither the likelihood nor the evidence can be evaluated:
-
+<br><br>
 .grid[
 .kol-1-4.center[
 
@@ -149,196 +223,164 @@ $x,\theta \sim p(x)p(\theta)$
 $\hat{r}(x|\theta)$]
 ]
 
-???
-
-Interesting observations:
-- MI(x,theta) = E_p(x,theta) log r(x,theta)
-- The likelihood ratio is a sufficient statistic. 
-- Bayes factor is a ratio -> enables model comparison
+.footnote[Credits: [Cranmer et al](https://arxiv.org/pdf/1506.02169.pdf), 2015; [Hermans et al](http://proceedings.mlr.press/v119/hermans20a/hermans20a.pdf), 2020.]
 
 ---
 
 class: middle
 
-$$p(\theta|x) = \frac{p(x|\theta) p(\theta)}{p(x)} \approx \hat{r}(x|\theta) p(\theta)$$
+.avatars[![](figures/faces/kyle.png)![](figures/faces/joeri.png)![](figures/faces/johann.png)]
 
-<br>
+The solution $d$ found after training  approximates the optimal classifier
+$$d(x, \theta) \approx d^\*(x, \theta) = \frac{p(x, \theta)}{p(x, \theta)+p(x)p(\theta)}.$$
+Therefore, $$r(x|\theta) = \frac{p(x|\theta)}{p(x)} = \frac{p(x, \theta)}{p(x)p(\theta)} \approx \frac{d(x, \theta)}{1-d(x, \theta)} = \hat{r}(x|\theta).$$
+
+???
+
+Derive on blackboard.
+
+---
+
+class: middle
+
+.avatars[![](figures/faces/kyle.png)![](figures/faces/joeri.png)![](figures/faces/johann.png)]
 
 .center.width-100[![](./figures/carl.png)]
 
 ---
 
-class: middle 
+class: middle
 
-# ... but proceed with caution!
+.avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
 
-aka model checking, evaluation, and criticism.
+## Hunting new physics at particle colliders (Frequentist)
+
+.center.width-70[![](figures/ex1-1.png)]
 
 ---
 
 class: middle
-count: false
 
-.grid[
-.kol-1-2[<br>
-.center[![](./figures/latent1.svg)]]
-.kol-1-2[]
-]
+.avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
 
----
-
-class: middle
-count: false
-
-.grid[
-.kol-1-2[<br>
-.center[![](./figures/latent1.svg)]]
-.kol-1-2[
-  
-.center[<video controls autoplay loop muted preload="auto" height="300" width="400">
-  <source src="./figures/galton.mp4" type="video/mp4">
-</video>]
-
-]
-]
-
----
-
-class: middle
-count: false
-
-.grid[
-.kol-1-2[.center[![](./figures/latent2.svg)]]
-.kol-1-2[Prior model $p(\theta)$
-<br><br><br><br>
-Observational model $p(x|\theta)$]
-]
+.center.width-100[![](figures/ex1-2.png)]
 
 ???
 
-This results in the Bayesian joint distribution $p(x, \theta)$.
+Conclusions:
+
+- With enough training data, the ML algorithms get the likelihood function right.
+
+- Using more information from the simulator improves sample efficiency substantially.
+
+(baseline: 2d histogram analysis of jet momenta and angular correlations)
+
+---
+
+background-image: url(./figures/stellar.jpeg)
+background-position: left
+class: black-slide
+
+.avatars[![](figures/faces/joeri.png)![](figures/faces/nil.jpg)![](figures/faces/christoph.jpg)![](figures/faces/gf.jpg)]
+
+.smaller-x[ ]
+## Constraining dark matter with stellar streams (Bayesian)
+
+<br><br><br><br><br><br>
+.pull-right[
+  
+<iframe width="360" height="270" src="https://www.youtube.com/embed/uQVv_Sfxx5E?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
+
+]
+
+.footnote[Image credits: C. Bickel/Science; [D. Erkal](https://t.co/U6KPgLBdpz?amp=1).].]
+
+---
+
+class: middle
+
+.avatars[![](figures/faces/joeri.png)![](figures/faces/nil.jpg)![](figures/faces/christoph.jpg)![](figures/faces/gf.jpg)]
+
+.center.width-90[![](./figures/dm1.png)]
+
+.center[
+.width-35[![](./figures/posterior-gd1-1d.png)]
+.width-35[![](./figures/posterior-gd1-2d.png)]
+
+]
+
+.footnote[Credits: [Hermans et al](https://arxiv.org/pdf/2011.14923), 2021.]
+
+---
+
+class: black-slide, center, middle
+
+.width-100[![](./figures/cdm-wdm.jpg)]
+
+Preliminary results for GD-1 suggest a .bold[preference for CDM over WDM].
+
+---
+
+# Neural Posterior Estimation (NPE)
+
+.pull-right[![](./figures/npe-diagram.png)]
+
+Use variational inference to directly estimate the posterior, by solving
+$$
+\begin{aligned}
+&\min\_{q\_\phi} \mathbb{E}\_{p(x)}\left[ \text{KL}( p(\theta|x) || q\_\phi(\theta|x) ) \right]
+\end{aligned}$$
+where $q\_\phi$ is a neural density estimator, such as a normalizing flow.
+
+???
+
+Derive on blackboard
+
+$$
+\begin{aligned}
+&\min\_{q\_\phi} \mathbb{E}\_{p(x)}\left[ \text{KL}( p(\theta|x) || q\_\phi(\theta|x) ) \right] \\\\
+=& \min\_{q\_\phi} \mathbb{E}\_{p(x)} \mathbb{E}\_{p(\theta|x)} \left[\log \frac{p(\theta|x)}{q\_\phi(\theta|x)} \right] \\\\
+=& \max\_{q\_\phi} \mathbb{E}\_{p(x, \theta)} \left[ \log q\_\phi(\theta|x) \right]
+\end{aligned}$$
 
 ---
 
 class: middle, black-slide
 
-.center.circle.width-50[![](./figures/georgebox.jpg)]
+## Exoplanet atmosphere characterization (Bayesian)
 
-.center["All models are wrong, but some are useful" - George Box]
+.center.width-95[![](./figures/exoplanet-probe.jpg)]
 
----
-
-class: middle
-
-## The observational model $p(x | \theta)$
-
-$p(x | \theta)$ should capture the pertinent structure of the true data generating process for the inference results to be useful.
-
-A model that does not capture every precise detail of the true data generating process can still be useful if it captures the details relevant to the particular analysis goals. 
-
-.footnote[Credits: [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html#14_Model_Adequacy), 2020.]
-
-???
-
-Put as much physics in the model as you can!
-
-The richness of the model can be probed with prior and posterior predictive checks.
+.footnote[Credits: [NSA/JPL-Caltech](https://www.nasa.gov/topics/universe/features/exoplanet20100203-b.html), 2010.]
 
 ---
 
 class: middle
 
-The observational model can often be made richer by including in it additional .bold[nuisance parameters] $\nu$ that capture known unknowns. 
-
-In this case, the likelihood becomes $$p(x | \theta) = \int p(x | \theta, \nu) p(\nu|\theta) d\nu.$$
-
-Although nuisance parameters can reduce model misspecification, their presence and marginalization will result in increased uncertainties for the parameters $\theta$ of interest.
-
----
-
-class: middle
-
-.avatars[![](figures/faces/norman.jpg)]
+.avatars[![](figures/faces/malavika.jpg)![](figures/faces/francois.jpg)![](figures/faces/absil.jpg)]
 
 .center[
-
-.width-70[![](figures/norman-setup.jpeg)]
-
-<video controls preload="auto" height="225" width="500" autoplay loop>
-  <source src="https://video.twimg.com/ext_tw_video/1445251463261872128/pu/vid/478x270/pVbx4507NgMLv3tn.mp4" type="video/mp4">
-</video>
-
+.width-25[![](./figures/exoplanet-residuals.png)]
+.width-70[![](./figures/exoplanet-corner.png)]
 ]
 
-Nuisance parameters are used to model known unknowns in a robotic setup (e.g., camera position, table position, etc).
-
-.footnote[Credits: [Marlier et al](https://arxiv.org/abs/2109.14275), 2021.]
-
 ---
 
-class: middle
+# Computational faithfulness
 
-## The prior model $p(\theta)$
-
-The prior model $p(\theta)$ specifies one's beliefs about the model parameters. It should reflect domain expertise.
-
----
-
-class: middle
-
-The consequences of the prior model in the context of the observational model can be diagnosed with .bold[prior predictive checks] to evaluate what data sets would be consistent with the prior. 
-
-A prior predictive check generates data $x^\text{sim}$ according to the prior predictive distribution $p(x)$ as 
-$$\begin{aligned}
-\theta^\text{sim} \sim p(\theta)\\\\
-x^\text{sim} \sim p(x | \theta^\text{sim}),
-\end{aligned}$$
-or summary statistics $T(x^\text{sim})$ thereof.
-
----
-
-class: middle
-
-.width-100[![](figures/prior-check.png)]
-
-.footnote[Credits: [Gabry et al](https://arxiv.org/abs/1709.01449), 2017.]
-
----
-
-class: middle
-
-.avatars[![](figures/faces/maxime.jpeg)![](figures/faces/antoine.png)![](figures/faces/kagan.jpg)]
-
-In the absence of a good prior, .bold[neural empirical Bayes] can be used to estimate a prior distribution $p\_\phi(\theta)$ by maximizing the (log) evidence of a set of observations
-$$\log p\_\phi(\\{x\_i\\}\_{i=1}^N) = \sum\_{i=1}^N \log \int p(x\_i | \theta) p\_\phi(\theta) d\theta.$$
-
-.footnote[Credits: [Vandegar et al](https://arxiv.org/abs/2011.05836), 2021.]
-
----
-
-class: middle
-
-.avatars[![](figures/faces/maxime.jpeg)![](figures/faces/antoine.png)![](figures/faces/kagan.jpg)]
-
-.center.width-60[![](figures/neb.png)]
-
-.footnote[Credits: [Vandegar et al](https://arxiv.org/abs/2011.05836), 2021.]
-
----
-
-class: middle
+<br>
 
 .grid[
 .kol-1-2[
-
-## Computational faithfulness
-
+<br>
 $$\hat{p}(\theta|x) = \text{sbi}(p(x | \theta), p(\theta), x)$$
 
-We must make sure our approximate simulation-based inference algorithms can (at least) actually realize faithful inferences on the observations we expect a priori -- i.e. those $x^\text{sim} \sim p(x)$.
+We must make sure our approximate simulation-based inference algorithms can (at least) actually realize faithful inferences on the (expected) observations.
 
 ]
-.kol-1-2[.center.width-100[![](figures/corner-exoplanet.png)]]
+.kol-1-2[.center.width-80[![](figures/exoplanet-corner.png)]
+
+.center.italic[How do we know this is good enough?]]
 ]
 
 ---
@@ -357,7 +399,7 @@ $$\begin{aligned}
 
 .center.width-100[![](figures/dm-posterior.gif)]
 
-.footnote[Credits: [Brhemer et al](https://iopscience.iop.org/article/10.3847/1538-4357/ab4c41/meta), 2019.]
+.footnote[Credits: [Brehmer et al](https://iopscience.iop.org/article/10.3847/1538-4357/ab4c41/meta), 2019.]
 
 ---
 
@@ -384,6 +426,14 @@ class: middle
 
 .avatars[![](figures/faces/joeri.png)![](figures/faces/arnaud.jpg)![](figures/faces/francois.jpg)![](figures/faces/antoine.png)]
 
+.center.width-70[![](./figures/posterior-large-small.png)]
+
+---
+
+class: middle
+
+.avatars[![](figures/faces/joeri.png)![](figures/faces/arnaud.jpg)![](figures/faces/francois.jpg)![](figures/faces/antoine.png)]
+
 <br>
 
 .center.width-90[![](figures/coverage-crisis.png)]
@@ -392,15 +442,9 @@ class: middle
 
 ---
 
-class: middle
+class: middle, center
 
-Faithfulness diagnostics require the ability to repeatedly compute $\hat{p}(\theta|x)$, which is immediate for amortized approaches but .bold[computationally very heavy for sequential inference algorithms].
-
----
-
-class: middle
-
-What if the diagnostic fails?
+What if diagnostics fail?
 
 ???
 
@@ -410,61 +454,31 @@ What if the diagnostic fails?
 
 ---
 
-class: middle
+# Balanced NRE
 
 .avatars[![](figures/faces/joeri.png)![](figures/faces/arnaud.jpg)![](figures/faces/francois.jpg)![](figures/faces/antoine.png)]
 
-Neural ratio estimation can be forced to be more .bold[conservative], hence increasing the reliability of the approximate posteriors and reducing the risk of false inferences.
-
-.center.width-100[![](figures/cnre.png)]
-
----
-
-class: middle
-
-## Posterior predictive checks
-
-If a model is a good fit, then we should be able to use it to generate data that resemble the data we observe.
-
-Formally, this can be diagnosed with posterior predictive checks that generates data $x^\text{sim}$ according to the posterior predictive distribution $$p(x^\text{sim}|x) = \int p(x^\text{sim}|\theta) p(\theta|x) d\theta,$$
-or summary statistics $T(x^\text{sim})$ thereof. 
-
----
-
-class: middle
-
-.width-100[![](figures/ppc.png)]
-
-.footnote[Credits: [Gabry et al](https://arxiv.org/abs/1709.01449), 2017.]
-
----
-
-class: middle
-
-.avatars[![](figures/georgebox.jpg)]
-
-## Box's loop: build, compute, critique, repeat
-
-.center.width-90[![](figures/box-loop.png)]
-
-Science does not end at the inference results. Instead, they should inform the next revision of the model.
-
-.footnote[Credits: [Blei](https://www.annualreviews.org/doi/full/10.1146/annurev-statistics-022513-115657), 2014.]
-
----
-
-# Proceed with caution!
+Enforce neural ratio estimation to be .bold[conservative] by using binary classifiers $\hat{d}$ that are balanced, i.e. such that
+$$
+\mathbb{E}\_{p(\theta,x)}\left[\hat{d}(\theta,x)\right] = \mathbb{E}\_{p(\theta)p(x)}\left[1 - \hat{d}(\theta,x)\right].
+$$
 
 <br>
 
-.question[Simulation-based inference is a major evolution in the statistical capabilities for science, enabled by advances in machine learning.]
+.center.width-100[![](figures/mainbnre1.png)]
 
-.alert[Need to reliably and efficiently assess the adequacy of the full Bayesian model.]
+.footnote[Credits: [Delaunoy et al](https://arxiv.org/abs/2208.13624), 2022.]
+
+---
+
+# Summary
+
+<br><br><br>
+
+.question[Simulation-based inference is a major evolution in the statistical capabilities for science, enabled by advances in machine learning.]
 
 .alert[Need to reliably and efficiently evaluate the quality of the posterior approximations.]
 
-.alert[Need to efficiently generate simulated data and use it to train ML components.]
-  
 ---
 
 class: end-slide, center

@@ -5,7 +5,7 @@ count: false
 
 Particle physics colloquium, KIT<br>
 
-January 12, 2022
+January 12, 2023
 
 <br>
 
@@ -91,16 +91,9 @@ What parameter values $\theta$ are the most plausible?
 
 ---
 
-# Bayesian inference
+class: middle
 
-Start with
-- a simulator that can generate $N$ samples $x\_i \sim p(x\_i|\theta\_i)$,
-- a prior model $p(\theta)$,
-- observed data $x\_\text{obs} \sim p(x\_\text{obs} | \theta\_\text{true})$.
-
-Then, estimate the posterior $$p(\theta|x\_\text{obs}) = \frac{p(x\_\text{obs} | \theta)p(\theta)}{p(x\_\text{obs})}$$
-
-.center.width-35[![](./figures/posterior.png)]
+$$p(\theta|x\_\text{obs}) = \frac{p(x\_\text{obs} | \theta)p(\theta)}{p(x\_\text{obs})}$$
 
 ---
 
@@ -257,6 +250,12 @@ class: middle
 
 .center.width-70[![](figures/ex1-1.png)]
 
+.footnote[Credits: [Brehmer et al](https://arxiv.org/pdf/1805.00020), 2018.]
+
+???
+
+We consider Higgs production in weak boson fusion (WBF) with a decay of the Higgs into four leptons,
+
 ---
 
 class: middle
@@ -264,6 +263,8 @@ class: middle
 .avatars[![](figures/faces/kyle.png)![](figures/faces/johann.png)]
 
 .center.width-100[![](figures/ex1-2.png)]
+
+.footnote[Credits: [Brehmer et al](https://arxiv.org/pdf/1805.00020), 2018.]
 
 ???
 
